@@ -1,0 +1,31 @@
+(setq make-backup-files nil)
+(setq semanticdb-default-save-directory (expand-file-name "~/.semanticdb")
+      semanticdb-default-file-name "semantic.cache"
+      semanticdb-default-system-save-directory nil
+     semanticdb-default-save-directory nil)
+
+(load-file "~/emacs/cedet-1.0/common/cedet.el")
+(global-ede-mode 'nil)
+(semantic-load-enable-gaudy-code-helpers)
+(global-srecode-minor-mode 1)
+(require 'semantic-ia)
+(require 'semantic-gcc)
+(require 'semanticdb)
+(global-semanticdb-minor-mode 1)
+
+(defun my-semantic-hook ()
+  (imenu-add-to-menubar "TAGS"))
+(add-hook 'semantic-init-hooks 'my-semantic-hook)
+
+(defun my-cedet-hook () 
+  (local-set-key [(control return)] 'semantic-ia-complete-symbol)
+  (local-set-key "\C-c?" 'semantic-ia-complete-symbol-menu)
+  (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
+  (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
+  (local-set-key "\C-c+" 'semantic-tag-folding-show-block)
+  (local-set-key "\C-c-" 'semantic-tag-folding-fold-block)
+  (local-set-key ">" 'semantic-complete-self-insert)
+  (local-set-key "." 'semantic-complete-self-insert))
+(add-hook 'c-mode-common-hook 'my-cedet-hook)
+
+(global-semantic-tag-folding-mode 1)
